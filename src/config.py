@@ -14,10 +14,14 @@ def check_environment_variables() -> None:
     This function checks for the following environment variables:
         - SLACK_BOT_TOKEN: The token for the Slack bot.
         - SLACK_APP_TOKEN: The token for the Slack app.
+        - SUPABASE_URL: The URL for the Supabase instance.
+        - SUPABASE_KEY: The API key for the Supabase instance.
     """
     required_vars = [
         "SLACK_BOT_TOKEN",
         "SLACK_APP_TOKEN",
+        "SUPABASE_URL",
+        "SUPABASE_KEY",
     ]
 
     optional_vars = []
