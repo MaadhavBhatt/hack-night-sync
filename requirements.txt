@@ -7,6 +7,7 @@ click==8.3.0
 colorama==0.4.6
 cryptography==46.0.3
 deprecation==2.1.0
+dotenv==0.9.9
 h11==0.16.0
 h2==4.3.0
 hpack==4.1.0
@@ -25,6 +26,7 @@ pycparser==2.23
 pydantic==2.12.3
 pydantic_core==2.41.4
 PyJWT==2.10.1
+python-dotenv==1.1.1
 pytokens==0.2.0
 realtime==2.22.1
 slack_bolt==1.26.0

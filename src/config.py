@@ -1,12 +1,17 @@
 import os
+from dotenv import load_dotenv
 
 ENV_VARS_CHECKED = False
 CONFIG: dict = {}
 
 
+load_dotenv()
+
+
 def check_environment_variables() -> None:
     """
     Checks if the required environment variables are set for the application.
+    Loads environment variables from a .env file if present.
 
     Raises:
         ValueError: If any of the required environment variables are not set or if the Firebase credentials file does not exist.
@@ -17,6 +22,10 @@ def check_environment_variables() -> None:
         - SUPABASE_URL: The URL for the Supabase instance.
         - SUPABASE_KEY: The API key for the Supabase instance.
     """
+    global ENV_VARS_CHECKED
+    if ENV_VARS_CHECKED:
+        return
+
     required_vars = [
         "SLACK_BOT_TOKEN",
         "SLACK_APP_TOKEN",
@@ -40,5 +49,4 @@ def check_environment_variables() -> None:
                 )
             CONFIG[var.lower()] = os.environ.get(var).lower() == "true"
 
-    global ENV_VARS_CHECKED
     ENV_VARS_CHECKED = True
