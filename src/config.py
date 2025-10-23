@@ -2,8 +2,54 @@ import os
 from dotenv import load_dotenv
 
 ENV_VARS_CHECKED = False
-CONFIG: dict = {}
 
+CONFIG: dict = {}
+COMMANDS = {
+    "help": None,
+    "me": None,
+    "cancel": None,
+    "hello": None,
+}
+
+# Message templates
+WELCOME_MESSAGE = lambda channel_name: {
+    "type": "section",
+    "text": {
+        "type": "mrkdwn",
+        "text": f"Hello! :wave: Welcome to the Hack Night Sync in *#{channel_name}* channel. Use `/hack-night help` to see the list of available commands.",
+    },
+}
+INVALID_COMMAND = lambda user_id: [
+    {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": f"Hello <@{user_id}>! :warning: The command you entered is invalid. Please use `/hack-night help` to see the list of valid commands.",
+        },
+    }
+]
+HELP_MESSAGE = lambda user_id: [
+    {
+        "type": "header",
+        "text": {"type": "plain_text", "text": "Hack Night Sync - Help", "emoji": True},
+    },
+    {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": f"Hello <@{user_id}>! Here are the available commands:",
+        },
+    },
+    {
+        "type": "context",
+        "elements": [
+            {
+                "type": "mrkdwn",
+                "text": "`/hack-night help` - Display this help message\n",
+            }
+        ],
+    },
+]
 
 load_dotenv()
 
