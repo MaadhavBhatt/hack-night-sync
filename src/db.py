@@ -4,6 +4,9 @@ from supabase import create_client, Client
 from .config import check_environment_variables, ENV_VARS_CHECKED
 
 
+IS_INITIALIZED = False
+
+
 def initialize_supabase() -> Client:
     """
     Initializes the Supabase client. Checks if the required environment variables are set before initialization.
@@ -17,4 +20,8 @@ def initialize_supabase() -> Client:
     supabase_url = os.environ.get("SUPABASE_URL")
     supabase_key = os.environ.get("SUPABASE_KEY")
     supabase: Client = create_client(supabase_url, supabase_key)
+
+    global IS_INITIALIZED
+    IS_INITIALIZED = True
+
     return supabase
