@@ -94,16 +94,17 @@ def handle_command(parts, client, user_id, channel_id, thread_ts):
         )
         return
 
-    if command == "me":
-        response = _me()
-    elif command == "cancel":
-        response = _cancel()
-    elif command == "help":
-        response = HELP_MESSAGE(user_id)
-    elif command == "hello":
-        response = WELCOME_MESSAGE(channel_id)
-    else:
-        response = INVALID_COMMAND(user_id)
+    match command:
+        case "me":
+            response = _me()
+        case "cancel":
+            response = _cancel()
+        case "help":
+            response = HELP_MESSAGE(user_id)
+        case "hello":
+            response = WELCOME_MESSAGE(channel_id)
+        case _:
+            response = INVALID_COMMAND(user_id)
 
     send_ephemeral_message(
         client=client,
