@@ -7,14 +7,13 @@ from .config import check_environment_variables, ENV_VARS_CHECKED, PLAN
 
 TABLE_NAME = "hack-night-plans"
 IS_INITIALIZED = False
+CLIENT = None
 
 
 def initialize_supabase() -> Client:
     """
-    Initializes the Supabase client. Checks if the required environment variables are set before initialization.
-
-    Returns:
-        Client: A reference to the Supabase client.
+    Initializes the Supabase client. Saves a global reference to the client.
+    Checks if the required environment variables are set before initialization.
     """
     if not ENV_VARS_CHECKED:
         check_environment_variables()
@@ -23,10 +22,9 @@ def initialize_supabase() -> Client:
     supabase_key = os.environ.get("SUPABASE_KEY")
     supabase: Client = create_client(supabase_url, supabase_key)
 
-    global IS_INITIALIZED
+    global IS_INITIALIZED, CLIENT
     IS_INITIALIZED = True
-
-    return supabase
+    CLIENT = supabase
 
 
 def add_plan(
@@ -55,7 +53,7 @@ def add_plan(
     # Initialize supabase if not already initialized
     global IS_INITIALIZED
     if not IS_INITIALIZED:
-        supabase = initialize_supabase()
+        initialize_supabase()
 
     # Validate inputs
     if end_time is None and duration is not None:
@@ -65,7 +63,7 @@ def add_plan(
     elif end_time is not None and duration is not None:
         raise ValueError("Only one of end_time or duration should be provided.")
 
-    supabase.table(TABLE_NAME).insert(
+    CLIENT.table(TABLE_NAME).insert(
         PLAN(
             user_id=user_id,
             plan=plan,
