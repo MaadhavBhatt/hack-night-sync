@@ -6,9 +6,19 @@ ENV_VARS_CHECKED = False
 CONFIG: dict = {}
 COMMANDS = {
     "help": None,
-    "me": None,
+    "me": "at",
     "cancel": None,
     "hello": None,
+}
+
+# Plan template
+PLAN = lambda user_id, plan, created_at, start_time, end_time: {
+    "user_id": user_id,
+    "plan_title": plan,
+    "created_at": created_at,
+    "cancelled": False,
+    "start_time": start_time,
+    "end_time": end_time,
 }
 
 # Message templates
