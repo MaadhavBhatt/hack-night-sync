@@ -7,6 +7,17 @@ from .slack_utils import send_ephemeral_message
 
 
 def handle_hack_night_command(ack, body, client):
+    """
+    Handles the /hack-night and /hacknight Slack commands.
+
+    Args:
+        ack: Function to acknowledge the command request.
+        body: The payload of the command request.
+        client: The Slack WebClient to send responses.
+
+    Returns:
+        None
+    """
     ack()
 
     user_id = body.get("user_id", "unknown_user")
@@ -20,7 +31,27 @@ def handle_hack_night_command(ack, body, client):
 
 
 def handle_command(parts, client, user_id, channel_id, thread_ts):
+    """
+    Handles the different subcommands for the /hack-night slash command.
+
+    Args:
+        parts (list): The list of command parts split by spaces.
+        client: The Slack WebClient to send responses.
+        user_id (str): The ID of the user who invoked the command.
+        channel_id (str): The ID of the channel where the command was invoked.
+        thread_ts (str): The thread timestamp if the command was invoked in a thread.
+
+    Returns:
+        None
+    """
+
     def _me():
+        """
+        Handles the 'me' subcommand to set a Hack Night sync time.
+
+        Returns:
+            str: Confirmation message.
+        """
         if subcommand == "at" and parts[2:]:
             at_time_str = " ".join(parts[2:])
             at_time = parser.parse(at_time_str)
@@ -40,6 +71,12 @@ def handle_command(parts, client, user_id, channel_id, thread_ts):
             return f"Setting your Hack Night sync time to {at_time}."
 
     def _cancel():
+        """
+        Handles the 'cancel' subcommand to cancel a Hack Night sync.
+
+        Returns:
+            str: Confirmation message.
+        """
         return "Your Hack Night sync has been cancelled."
 
     # If no command is provided, send the welcome message
