@@ -40,4 +40,4 @@ def is_recent(dt: datetime, delta_minutes: int = 10) -> bool:
     if dt.tzinfo is None:
         raise ValueError("dt must be timezone-aware")
 
-    return abs(dt - datetime.now(timezone.utc)) < timedelta(minutes=delta_minutes)
+    return abs(dt - datetime.now(timezone.utc)) <= timedelta(minutes=delta_minutes)

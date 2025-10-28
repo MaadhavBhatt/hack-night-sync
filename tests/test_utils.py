@@ -21,6 +21,13 @@ def test_is_recent_within_and_outside_delta():
     assert is_recent(now + timedelta(minutes=15), delta_minutes=10) is False
 
 
+@freeze("2025-01-01T12:00:00Z")
+def test_is_recent_exactly_on_boundary():
+    now = datetime.now(timezone.utc)
+    assert is_recent(now - timedelta(minutes=10), delta_minutes=10) is True
+    assert is_recent(now + timedelta(minutes=10), delta_minutes=10) is True
+
+
 def test_is_recent_naive_dt_raises():
     naive = datetime.now() - timedelta(minutes=5)
     with pytest.raises(ValueError):
