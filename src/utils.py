@@ -41,3 +41,17 @@ def is_recent(dt: datetime, delta_minutes: int = 10) -> bool:
         raise ValueError("dt must be timezone-aware")
 
     return abs(dt - datetime.now(timezone.utc)) <= timedelta(minutes=delta_minutes)
+
+
+def is_in_distant_future(dt: datetime, window: timedelta = timedelta(days=30)) -> bool:
+    """
+    Checks if the given datetime is more than the specified window into the future.
+
+    Args:
+        dt (datetime): The datetime to be checked.
+        window (timedelta, optional): The time window to consider as distant future. Defaults to 30 days.
+
+    Returns:
+        bool: True if the datetime is more than the specified window into the future, False otherwise.
+    """
+    return dt > datetime.now(timezone.utc) + window

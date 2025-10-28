@@ -2,7 +2,7 @@ from datetime import datetime, timezone, timedelta
 import pytest
 from freezegun import freeze_time as freeze
 
-from src.utils import is_past, is_recent
+from src.utils import is_past, is_recent, is_in_distant_future
 
 
 @freeze("2025-01-01T12:00:00Z")
@@ -41,3 +41,29 @@ def test_is_recent_invalid_types_and_values():
         is_recent(datetime.now(timezone.utc), delta_minutes="ten")
     with pytest.raises(ValueError):
         is_recent(datetime.now(timezone.utc), delta_minutes=-5)
+
+
+@freeze("2025-01-01T12:00:00Z")
+def test_is_in_distant_future_true_and_false():
+    now = datetime.now(timezone.utc)
+    assert is_in_distant_future(now + timedelta(days=31)) is True
+    assert is_in_distant_future(now + timedelta(days=29)) is False
+
+
+@freeze("2025-01-01T12:00:00Z")
+def test_is_in_distant_future_with_custom_window():
+    now = datetime.now(timezone.utc)
+    assert (
+        is_in_distant_future(now + timedelta(hours=25), window=timedelta(hours=24))
+        is True
+    )
+    assert (
+        is_in_distant_future(now + timedelta(hours=23), window=timedelta(hours=24))
+        is False
+    )
+
+
+@freeze("2025-01-01T12:00:00Z")
+def test_is_in_distant_future_exactly_on_boundary():
+    now = datetime.now(timezone.utc)
+    assert is_in_distant_future(now + timedelta(days=30)) is False
