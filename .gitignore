@@ -205,3 +205,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# In response to Supabase temp files in /supabase/.temp/
+.temp
