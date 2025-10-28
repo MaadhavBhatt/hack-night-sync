@@ -1,0 +1,9 @@
+CREATE TABLE public.hack_night_plans (
+  id SERIAL PRIMARY KEY,
+  slack_user_id TEXT NOT NULL,
+  plan_title TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  cancelled BOOLEAN DEFAULT FALSE
+);
