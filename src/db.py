@@ -5,7 +5,7 @@ from supabase import create_client, Client
 from .config import check_environment_variables, ENV_VARS_CHECKED, PLAN
 
 
-TABLE_NAME = "hack-night-plans"
+TABLE_NAME = "hack_night_plans"
 IS_INITIALIZED = False
 CLIENT = None
 
