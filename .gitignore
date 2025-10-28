@@ -208,3 +208,6 @@ __marimo__/
 
 # In response to Supabase temp files in /supabase/.temp/
 .temp
+
+# Combined supabase schema for development (not for production)
+supabase/schema.sql
