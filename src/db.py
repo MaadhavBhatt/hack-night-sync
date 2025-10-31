@@ -72,3 +72,54 @@ def add_plan(
             created_at=str(created_at),
         )
     ).execute()
+
+
+def get_plan_by_id(user_id: str, id: str) -> None:
+    """
+    Retrieves a Hack Night plan from the Supabase database by its ID.
+
+    Args:
+        user_id (str): The ID of the user retrieving the plan.
+        id (str): The ID of the plan to be retrieved.
+    """
+    global IS_INITIALIZED
+    if not IS_INITIALIZED:
+        initialize_supabase()
+
+    CLIENT.table(TABLE_NAME).select("*").eq("id", id).eq("user_id", user_id).execute()
+
+
+def get_plans_by_user(user_id: str, latest=True) -> None:
+    """
+    Retrieves Hack Night plans for a specific user from the Supabase database.
+
+    Args:
+        user_id (str): The ID of the user whose plans are to be retrieved.
+        latest (bool, optional): If True, retrieves only the latest plan. Defaults to True.
+    """
+    global IS_INITIALIZED
+    if not IS_INITIALIZED:
+        initialize_supabase()
+
+    if latest:
+        CLIENT.table(TABLE_NAME).select("*").eq("user_id", user_id).order(
+            "created_at", desc=True
+        ).limit(1).execute()
+    else:
+        CLIENT.table(TABLE_NAME).select("*").eq("user_id", user_id).execute()
+
+
+def get_plans_by_time(time: datetime) -> None:
+    """
+    Retrieves all Hack Night plans scheduled for a specific time from the Supabase database.
+
+    Args:
+        time (datetime): The time for which to retrieve plans.
+    """
+    global IS_INITIALIZED
+    if not IS_INITIALIZED:
+        initialize_supabase()
+
+    CLIENT.table(TABLE_NAME).select("*").lte("start_time", str(time)).gte(
+        "end_time", str(time)
+    ).execute()
