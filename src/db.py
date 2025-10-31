@@ -123,3 +123,44 @@ def get_plans_by_time(time: datetime) -> None:
     CLIENT.table(TABLE_NAME).select("*").lte("start_time", str(time)).gte(
         "end_time", str(time)
     ).execute()
+
+
+def cancel_plan_by_id(user_id: str, id: str) -> None:
+    """
+    Cancels a Hack Night plan in the Supabase database by its ID.
+
+    Args:
+        user_id (str): The ID of the user cancelling the plan.
+        id (str): The ID of the plan to be cancelled.
+    """
+    global IS_INITIALIZED
+    if not IS_INITIALIZED:
+        initialize_supabase()
+
+    CLIENT.table(TABLE_NAME).update({"cancelled": True}).eq("id", id).eq(
+        "user_id", user_id
+    ).execute()
+
+
+def cancel_plans_by_user(user_id: str, latest: bool = True) -> None:
+    """
+    Cancels Hack Night plans for a specific user from the Supabase database.
+
+    Args:
+        user_id (str): The ID of the user whose plan is to be cancelled.
+        latest (bool, optional): If True, cancels the latest plan. Defaults to True.
+    """
+    global IS_INITIALIZED
+    if not IS_INITIALIZED:
+        initialize_supabase()
+
+    user_plans = get_plans_by_user(user_id)
+    if not user_plans.data:
+        return
+
+    if latest:
+        latest_plan = max(user_plans.data, key=lambda plan: plan["created_at"])
+        cancel_plan_by_id(user_id, latest_plan["id"])
+    else:
+        for plan in user_plans.data:
+            cancel_plan_by_id(user_id, plan["id"])
