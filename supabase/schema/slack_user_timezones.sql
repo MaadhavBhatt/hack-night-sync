@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS public.slack_user_timezones;
 CREATE TABLE public.slack_user_timezones (
   id SERIAL PRIMARY KEY,
   slack_user_id TEXT NOT NULL UNIQUE,

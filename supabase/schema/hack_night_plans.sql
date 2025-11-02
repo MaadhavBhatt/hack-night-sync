@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS public.hack_night_plans;
 CREATE TABLE public.hack_night_plans (
   id SERIAL PRIMARY KEY,
   slack_user_id TEXT NOT NULL,
