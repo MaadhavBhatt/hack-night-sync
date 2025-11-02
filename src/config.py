@@ -13,7 +13,7 @@ COMMANDS = {
 
 # Plan template
 PLAN = lambda user_id, plan, created_at, start_time, end_time: {
-    "user_id": user_id,
+    "slack_user_id": user_id,
     "plan_title": plan,
     "created_at": created_at,
     "cancelled": False,
