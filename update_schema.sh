@@ -9,8 +9,10 @@ if [[ "$proceed" != "Y" && "$proceed" != "y" ]]; then
   exit 1
 fi
 
-if ! command -v supabase &> /dev/null; then
-  echo "Error: supabase CLI is not installed. Please install it before running this script."
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
+else
+  echo "Error: .env file not found."
   exit 1
 fi
 
@@ -28,10 +30,7 @@ else
   exit 1
 fi
 
-echo "Resetting the database (this will remove all data)..."
-supabase db reset
-
 echo "Applying the schema..."
-supabase db push --file "$DB_DIR/schema.sql"
+psql "$DB_URL" -f "$COMBINED_SCHEMA"
 
 echo "Schemas successfully updated."
