@@ -22,13 +22,15 @@ PLAN = lambda user_id, plan, created_at, start_time, end_time: {
 }
 
 # Message templates
-WELCOME_MESSAGE = lambda channel_name: {
-    "type": "section",
-    "text": {
-        "type": "mrkdwn",
-        "text": f"Hello! :wave: Welcome to the Hack Night Sync in *#{channel_name}* channel. Use `/hack-night help` to see the list of available commands.",
-    },
-}
+WELCOME_MESSAGE = lambda channel_name: [
+    {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": f"Hello! :wave: Welcome to the Hack Night Sync in *#{channel_name}* channel. Use `/hack-night help` to see the list of available commands.",
+        },
+    }
+]
 INVALID_COMMAND = lambda user_id: [
     {
         "type": "section",
