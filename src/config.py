@@ -11,15 +11,6 @@ COMMANDS = {
     "hello": None,
 }
 
-# Plan template
-PLAN = lambda slack_user_id, plan_title, created_at, start_time, end_time: {
-    "slack_user_id": slack_user_id,
-    "plan_title": plan_title,
-    "created_at": created_at,
-    "start_time": start_time,
-    "end_time": end_time,
-    "cancelled": False,
-}
 
 # Message templates
 WELCOME_MESSAGE = lambda channel_name: [
@@ -64,6 +55,56 @@ HELP_MESSAGE = lambda user_id: [
 ]
 
 load_dotenv()
+
+
+# Plan template
+class Plan:
+    def __init__(
+        self,
+        id: str,
+        slack_user_id: str,
+        plan_title: str,
+        created_at: str,
+        start_time: str,
+        end_time: str,
+        cancelled: bool = False,
+        **kwargs,
+    ):
+        self.id = id
+        self.slack_user_id = slack_user_id
+        self.plan_title = plan_title
+        self.created_at = created_at
+        self.start_time = start_time
+        self.end_time = end_time
+        self.cancelled = cancelled
+
+        self.options = kwargs
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "slack_user_id": self.slack_user_id,
+            "plan_title": self.plan_title,
+            "created_at": self.created_at,
+            "start_time": self.start_time,
+            "end_time": self.end_time,
+            "cancelled": self.cancelled,
+            **self.options,
+        }
+
+    def __repr__(self):
+        return f"Plan at ID {self.id} for user {self.slack_user_id} titled '{self.plan_title}'"
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __eq__(self, other):
+        if not isinstance(other, Plan):
+            return False
+        return self.to_dict() == other.to_dict()
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 def check_environment_variables() -> None:
