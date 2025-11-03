@@ -28,8 +28,8 @@ def initialize_supabase() -> Client:
 
 
 def add_plan(
-    user_id: str,
-    plan: any,
+    slack_user_id: str,
+    plan_title: str,
     start_time: datetime,
     end_time: datetime = None,
     duration: timedelta = None,
@@ -40,8 +40,8 @@ def add_plan(
 
     Args:
         supabase (Client): The Supabase client.
-        user_id (str): The ID of the user adding the plan.
-        plan (any): The plan details to be added.
+        slack_user_id (str): The ID of the user adding the plan.
+        plan_title (str): The title of the plan to be added.
         start_time (datetime): The start time of the plan.
         end_time (datetime, optional): The end time of the plan. Defaults to None.
         duration (timedelta, optional): The duration of the plan. Defaults to None.
@@ -65,38 +65,40 @@ def add_plan(
 
     CLIENT.table(TABLE_NAME).insert(
         PLAN(
-            user_id=user_id,
-            plan=plan,
+            slack_user_id=slack_user_id,
+            plan_title=plan_title,
+            created_at=str(created_at),
             start_time=str(start_time),
             end_time=str(end_time),
-            created_at=str(created_at),
         )
     ).execute()
 
 
-def get_plan_by_id(user_id: str, id: str) -> None:
+def get_plan_by_id(slack_user_id: str, id: str) -> None:
     """
     Retrieves a Hack Night plan from the Supabase database by its ID.
 
     Args:
-        user_id (str): The ID of the user retrieving the plan.
+        slack_user_id (str): The ID of the user retrieving the plan.
         id (str): The ID of the plan to be retrieved.
     """
     global IS_INITIALIZED
     if not IS_INITIALIZED:
         initialize_supabase()
 
-    CLIENT.table(TABLE_NAME).select("*").eq("id", id).eq("user_id", user_id).execute()
+    CLIENT.table(TABLE_NAME).select("*").eq("id", id).eq(
+        "slack_user_id", slack_user_id
+    ).execute()
 
 
 def get_plans_by_user(
-    user_id: str, count: int = -1, chronological: bool = False
+    slack_user_id: str, count: int = -1, chronological: bool = False
 ) -> None:
     """
     Retrieves Hack Night plans for a specific user from the Supabase database.
 
     Args:
-        user_id (str): The ID of the user whose plans are to be retrieved.
+        slack_user_id (str): The ID of the user whose plans are to be retrieved.
         count (int, optional): The number of plans to retrieve. Defaults to -1 (no limit).
         chronological (bool, optional): If True, retrieves plans in chronological order.
             Otherwise, retrieves in reverse chronological order. Defaults to False.
@@ -105,7 +107,7 @@ def get_plans_by_user(
     if not IS_INITIALIZED:
         initialize_supabase()
 
-    CLIENT.table(TABLE_NAME).select("*").eq("user_id", user_id).order(
+    CLIENT.table(TABLE_NAME).select("*").eq("slack_user_id", slack_user_id).order(
         "created_at", desc=chronological is False
     ).limit(count).execute()
 
@@ -126,12 +128,12 @@ def get_plans_by_time(time: datetime) -> None:
     ).execute()
 
 
-def cancel_plan_by_id(user_id: str, id: str) -> None:
+def cancel_plan_by_id(slack_user_id: str, id: str) -> None:
     """
     Cancels a Hack Night plan in the Supabase database by its ID.
 
     Args:
-        user_id (str): The ID of the user cancelling the plan.
+        slack_user_id (str): The ID of the user cancelling the plan.
         id (str): The ID of the plan to be cancelled.
     """
     global IS_INITIALIZED
@@ -139,29 +141,29 @@ def cancel_plan_by_id(user_id: str, id: str) -> None:
         initialize_supabase()
 
     CLIENT.table(TABLE_NAME).update({"cancelled": True}).eq("id", id).eq(
-        "user_id", user_id
+        "slack_user_id", slack_user_id
     ).execute()
 
 
-def cancel_plans_by_user(user_id: str, latest: bool = True) -> None:
+def cancel_plans_by_user(slack_user_id: str, latest: bool = True) -> None:
     """
     Cancels Hack Night plans for a specific user from the Supabase database.
 
     Args:
-        user_id (str): The ID of the user whose plan is to be cancelled.
+        slack_user_id (str): The ID of the user whose plan is to be cancelled.
         latest (bool, optional): If True, cancels the latest plan. Defaults to True.
     """
     global IS_INITIALIZED
     if not IS_INITIALIZED:
         initialize_supabase()
 
-    user_plans = get_plans_by_user(user_id)
+    user_plans = get_plans_by_user(slack_user_id)
     if not user_plans.data:
         return
 
     if latest:
         latest_plan = max(user_plans.data, key=lambda plan: plan["created_at"])
-        cancel_plan_by_id(user_id, latest_plan["id"])
+        cancel_plan_by_id(slack_user_id, latest_plan["id"])
     else:
         for plan in user_plans.data:
-            cancel_plan_by_id(user_id, plan["id"])
+            cancel_plan_by_id(slack_user_id, plan["id"])

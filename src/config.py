@@ -12,13 +12,13 @@ COMMANDS = {
 }
 
 # Plan template
-PLAN = lambda user_id, plan, created_at, start_time, end_time: {
-    "slack_user_id": user_id,
-    "plan_title": plan,
+PLAN = lambda slack_user_id, plan_title, created_at, start_time, end_time: {
+    "slack_user_id": slack_user_id,
+    "plan_title": plan_title,
     "created_at": created_at,
-    "cancelled": False,
     "start_time": start_time,
     "end_time": end_time,
+    "cancelled": False,
 }
 
 # Message templates

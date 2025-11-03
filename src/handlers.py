@@ -61,7 +61,7 @@ def handle_command(parts, client, user_id, channel_id, thread_ts):
             duration = timedelta(hours=1)  # Default duration of 1 hour
 
             db.add_plan(
-                user_id=user_id,
+                slack_user_id=user_id,
                 plan=plan,
                 start_time=at_time,
                 end_time=end_time,
