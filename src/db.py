@@ -89,24 +89,25 @@ def get_plan_by_id(user_id: str, id: str) -> None:
     CLIENT.table(TABLE_NAME).select("*").eq("id", id).eq("user_id", user_id).execute()
 
 
-def get_plans_by_user(user_id: str, latest=True) -> None:
+def get_plans_by_user(
+    user_id: str, count: int = -1, chronological: bool = False
+) -> None:
     """
     Retrieves Hack Night plans for a specific user from the Supabase database.
 
     Args:
         user_id (str): The ID of the user whose plans are to be retrieved.
-        latest (bool, optional): If True, retrieves only the latest plan. Defaults to True.
+        count (int, optional): The number of plans to retrieve. Defaults to -1 (no limit).
+        chronological (bool, optional): If True, retrieves plans in chronological order.
+            Otherwise, retrieves in reverse chronological order. Defaults to False.
     """
     global IS_INITIALIZED
     if not IS_INITIALIZED:
         initialize_supabase()
 
-    if latest:
-        CLIENT.table(TABLE_NAME).select("*").eq("user_id", user_id).order(
-            "created_at", desc=True
-        ).limit(1).execute()
-    else:
-        CLIENT.table(TABLE_NAME).select("*").eq("user_id", user_id).execute()
+    CLIENT.table(TABLE_NAME).select("*").eq("user_id", user_id).order(
+        "created_at", desc=chronological is False
+    ).limit(count).execute()
 
 
 def get_plans_by_time(time: datetime) -> None:
