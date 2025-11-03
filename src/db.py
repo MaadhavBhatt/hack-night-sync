@@ -107,9 +107,15 @@ def get_plans_by_user(
     if not IS_INITIALIZED:
         initialize_supabase()
 
-    CLIENT.table(TABLE_NAME).select("*").eq("slack_user_id", slack_user_id).order(
-        "created_at", desc=chronological is False
-    ).limit(count).execute()
+    return (
+        CLIENT.table(TABLE_NAME)
+        .select("*")
+        .eq("slack_user_id", slack_user_id)
+        .order("created_at", desc=chronological is False)
+        .limit(count)
+        .execute()
+        .data
+    )
 
 
 def get_plans_by_time(time: datetime) -> None:
@@ -123,9 +129,13 @@ def get_plans_by_time(time: datetime) -> None:
     if not IS_INITIALIZED:
         initialize_supabase()
 
-    CLIENT.table(TABLE_NAME).select("*").lte("start_time", str(time)).gte(
-        "end_time", str(time)
-    ).execute()
+    return (
+        CLIENT.table(TABLE_NAME)
+        .select("*")
+        .lte("start_time", str(time))
+        .gte("end_time", str(time))
+        .execute()
+    )
 
 
 def cancel_plan_by_id(slack_user_id: str, id: str) -> None:
