@@ -1,16 +1,23 @@
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="center">
+    <h1 class="next">Next Hack Night in N minutes</h1>
+  </div>
 </template>
 
 <script setup lang="ts"></script>
 
 <style>
+/* Import Google Sans Code font */
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&display=swap');
+
 /* Do not use !important inside layers */
 @layer reset, base, layout, components, utilities;
+
+:root {
+  --font-primary: 'Google Sans Code', monocode;
+  --clr-black: #0a0a0a;
+  --clr-white: #fefefe;
+}
 
 /* CSS Reset from https://www.joshwcomeau.com/css/custom-css-reset/ */
 @layer reset {
@@ -82,6 +89,30 @@
 
   :root {
     font-size: 10px;
+  }
+}
+
+@layer base {
+  body {
+    font-family: var(--font-primary);
+    color: var(--clr-white);
+    background-color: var(--clr-black);
+  }
+}
+
+@layer components {
+  .next {
+    font-size: 4rem;
+    text-align: center;
+  }
+}
+
+@layer utilities {
+  .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
   }
 }
 </style>
